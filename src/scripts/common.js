@@ -359,6 +359,13 @@ window.togglbutton = {
       }
     });
 
+    $('#toggl-button-tag-filter').addEventListener('keydown', function(e) {
+      if (e.code === 'Enter' && tagAutocomplete.filter.value !== '') {
+        tagAutocomplete.addNew();
+        e.preventDefault();
+      }
+    });
+
     $('form', editForm).addEventListener('submit', function(e) {
       submitForm(this);
       e.preventDefault();

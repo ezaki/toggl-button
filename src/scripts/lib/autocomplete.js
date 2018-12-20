@@ -59,7 +59,6 @@ AutoComplete.prototype.addEvents = function() {
         e.stopPropagation();
         e.preventDefault();
       }
-      that.closeDropdown();
     }
     if (
       e.code === 'Escape' &&
@@ -748,15 +747,31 @@ TagAutoComplete.prototype.updateAddLink = function(e) {
 };
 
 TagAutoComplete.prototype.addNew = function(text) {
-  var val = text || this.filter.value,
-    list = this.el.querySelector('.' + this.type + '-list'),
-    item = document.createElement('li');
+  var val = text || this.filter.value;
 
-  item.className = this.type + '-item selected-' + this.type;
-  item.setAttribute('title', val);
-  item.textContent = val;
+  if (!this.exactMatch) {
+    var list = this.el.querySelector('.' + this.type + '-list'),
+      item = document.createElement('li');
 
-  list.insertBefore(item, list.querySelector('li:first-child'));
-  this.filter.value = '';
-  this.filterSelection();
+    item.className = this.type + '-item selected-' + this.type;
+    item.setAttribute('title', val);
+    item.textContent = val;
+
+    list.insertBefore(item, list.querySelector('li:first-child'));
+    this.filter.value = '';
+    this.filterSelection();
+  }
+  else {
+    for (var key in this.listItems) {
+      if (this.listItems.hasOwnProperty(key)) {
+        var row = this.listItems[key];
+        text = row.getAttribute('title').toLowerCase();
+        if (text === val.toLowerCase()) {
+          row.classList.add('selected-' + this.type);
+        }
+      }
+    }
+    this.filter.value = '';
+    this.filterSelection();
+  }
 };
